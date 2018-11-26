@@ -1,10 +1,10 @@
 import React, { Fragment } from "react";
-
+import Toolbar from "../Navigation/Toolbar/Toolbar";
 const layout = props => (
  <Fragment>
-  <div>ToolBar, SideDrawer,Backdrop</div>
+  <Toolbar />
 
-  <main>{props.children}</main>
+  <main style={{ marginTop: "72px" }}>{props.children}</main>
  </Fragment>
 );
 
