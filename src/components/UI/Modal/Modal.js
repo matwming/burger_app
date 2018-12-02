@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, Component } from "react";
 import styled from "styled-components";
 import Backdrop from "../Backdrop/Backdrop";
 
@@ -19,17 +19,29 @@ const MyModal = styled.div`
   left: calc(50% - 250px);
  }
 `;
-const model = props => (
- <Fragment>
-  <Backdrop show={props.show} clicked={props.modalClosed} />
-  <MyModal
-   style={{
-    transform: props.show ? "translateY(0)" : "translateY(-100vh)",
-    opacity: props.show ? "1" : "0"
-   }}
-  >
-   {props.children}
-  </MyModal>
- </Fragment>
-);
-export default model;
+class Model extends Component {
+ state = {};
+ componentDidUpdate() {
+  console.log("Modal_didUpdate");
+ }
+ shouldComponentUpdate(nextProps, nextState) {
+  return nextProps.show !== this.props.show || nextProps.children !== this.props.children;
+ }
+ render() {
+  return (
+   <Fragment>
+    <Backdrop show={this.props.show} clicked={this.props.modalClosed} />
+    <MyModal
+     style={{
+      transform: this.props.show ? "translateY(0)" : "translateY(-100vh)",
+      opacity: this.props.show ? "1" : "0"
+     }}
+    >
+     {this.props.children}
+    </MyModal>
+   </Fragment>
+  );
+ }
+}
+
+export default Model;

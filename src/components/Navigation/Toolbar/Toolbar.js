@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-
+import Logo from "../../Logo/Logo";
+import NavigationItems from "../NavigationItems/NavigationItems";
+import DrawerToggler from "../SideDrawer/DrawerToggler/DrawerToggler";
 const Header = styled.header`
  height: 56px;
  width: 100%;
@@ -17,12 +19,17 @@ const Header = styled.header`
 `;
 const Nav = styled.nav`
  height: 100%;
+ @media (max-width: 499px) {
+  display: none;
+ }
 `;
 const toolbar = props => (
  <Header>
-  <div>Menu</div>
-  <div>Logo</div>
-  <Nav>...</Nav>
+  <DrawerToggler clicked={props.clicked} />
+  <Logo height="80%" />
+  <Nav>
+   <NavigationItems />
+  </Nav>
  </Header>
 );
 
