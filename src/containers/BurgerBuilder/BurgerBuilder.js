@@ -14,17 +14,29 @@ const INGREDIENT_PRICES = {
 };
 class BurgerBuilder extends Component {
  state = {
-  ingredients: {
-   salad: 0,
-   bacon: 0,
-   cheese: 0,
-   meat: 0
-  },
+  ingredients: "",
   totalPrice: 4,
   purchaseable: false,
   purchasing: false,
-  loading: false
+  loading: false,
+  error: false
  };
+ componentDidMount() {
+  axios
+   .get("https://newburgerapp.firebaseio.com/ingredients.js")
+   .then(json => {
+    if (json.status === 200) {
+     this.setState({
+      ingredients: json.data
+     });
+    }
+   })
+   .catch(error =>
+    this.setState({
+     error: true
+    })
+   );
+ }
  updatePurchaseState(ingredients) {
   const sum = Object.values(ingredients).reduce((a, b) => {
    return a + b;
@@ -132,12 +144,8 @@ class BurgerBuilder extends Component {
   if (this.state.loading) {
    orderSummary = <Spinner />;
   }
-
-  return (
+  let burger = (
    <Fragment>
-    <Modal show={this.state.purchasing} modalClosed={this.purchaseCancelHandler}>
-     {orderSummary}
-    </Modal>
     <Burger ingredients={this.state.ingredients} />
     <BuildControls
      ingredientAdded={this.addIngredientHandler}
@@ -147,6 +155,18 @@ class BurgerBuilder extends Component {
      purchaseable={this.state.purchaseable}
      ordered={this.purchaseHandler.bind(this)}
     />
+   </Fragment>
+  );
+  if (!this.state.ingredients) {
+   burger = this.state.error ? <p>Ingredients cannot be loaded!</p> : <Spinner />;
+   orderSummary = <Spinner />;
+  }
+  return (
+   <Fragment>
+    <Modal show={this.state.purchasing} modalClosed={this.purchaseCancelHandler}>
+     {orderSummary}
+    </Modal>
+    {burger}
    </Fragment>
   );
  }
