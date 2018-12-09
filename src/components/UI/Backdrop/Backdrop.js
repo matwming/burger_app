@@ -9,6 +9,9 @@ const MyBackdrop = styled.div`
  left: 0;
  top: 0;
  background-color: rgba(0, 0, 0, 0.5);
+ @media (min-width: 500px) {
+  visibility: hidden;
+ }
 `;
 const backdrop = props => (props.show ? <MyBackdrop onClick={props.clicked} /> : null);
 

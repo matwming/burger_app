@@ -6,6 +6,7 @@ import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
 import axios from "../../config";
 import Spinner from "../../components/UI/Spinner/Spinner";
 import ErrorHandler from "../ErrorHandler/ErrorHandler";
+import { withRouter } from "react-router-dom";
 const INGREDIENT_PRICES = {
  salad: 0.5,
  cheese: 0.4,
@@ -23,8 +24,9 @@ class BurgerBuilder extends Component {
  };
  componentDidMount() {
   axios
-   .get("https://newburgerapp.firebaseio.com/ingredients.js")
+   .get("https://newburgerapp.firebaseio.com/ingredients.json")
    .then(json => {
+    console.log("burgerBuild", json.data);
     if (json.status === 200) {
      this.setState({
       ingredients: json.data
@@ -90,40 +92,52 @@ class BurgerBuilder extends Component {
   this.setState({ purchasing: false });
  };
  purchaseContinueHandler = () => {
-  this.setState({
-   loading: true
+  // this.setState({
+  //  loading: true
+  // });
+  // console.log("loading...started");
+  // let data = {
+  //  ingredients: this.state.ingredients,
+  //  price: this.state.totalPrice,
+  //  customer: {
+  //   name: "ming",
+  //   address: {
+  //    street: "81 hawthorn road",
+  //    postcode: "3131"
+  //   },
+  //   email: "test@test.com"
+  //  }
+  // };
+  // axios
+  //  .post("/orders.json", data)
+  //  .then(json => {
+  //   console.log(json);
+  //   if (json.status === 200) {
+  //    this.setState({
+  //     loading: false,
+  //     purchasing: false
+  //    });
+  //   }
+  //  })
+  //  .catch(error => {
+  //   console.log(error);
+  //   this.setState({
+  //    loading: false,
+  //    purchasing: false
+  //   });
+  //  });
+  const queryParams = [];
+  for (let i in this.state.ingredients) {
+   queryParams.push(encodeURIComponent(i) + "=" + encodeURIComponent(this.state.ingredients[i]));
+   console.log("i", i);
+   console.log("encodeURIComponent", encodeURIComponent(i));
+   console.log("encodeURIComponent(i)", encodeURIComponent(this.state.ingredients[i]));
+  }
+  const queryString = queryParams.join("&");
+  this.props.history.push({
+   pathname: "/checkout",
+   search: "?" + queryString
   });
-  console.log("loading...started");
-  let data = {
-   ingredients: this.state.ingredients,
-   price: this.state.totalPrice,
-   customer: {
-    name: "ming",
-    address: {
-     street: "81 hawthorn road",
-     postcode: "3131"
-    },
-    email: "test@test.com"
-   }
-  };
-  axios
-   .post("/orders.json", data)
-   .then(json => {
-    console.log(json);
-    if (json.status === 200) {
-     this.setState({
-      loading: false,
-      purchasing: false
-     });
-    }
-   })
-   .catch(error => {
-    console.log(error);
-    this.setState({
-     loading: false,
-     purchasing: false
-    });
-   });
  };
  render() {
   console.log("loading_status", this.state.loading);
@@ -172,4 +186,4 @@ class BurgerBuilder extends Component {
  }
 }
 
-export default ErrorHandler(BurgerBuilder, axios);
+export default withRouter(ErrorHandler(BurgerBuilder, axios));

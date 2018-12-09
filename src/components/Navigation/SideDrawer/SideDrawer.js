@@ -5,7 +5,7 @@ import NavigationItems from "../NavigationItems/NavigationItems";
 import Backdrop from "../../UI/Backdrop/Backdrop";
 const Div = styled.div`
  position: fixed;
- width: 280px;
+ width: 200px;
  max-width: 70%;
  height: 100%;
  left: 0;
@@ -25,7 +25,7 @@ const sideDrawer = props => {
  return (
   <Fragment>
    <Backdrop show={props.open} clicked={props.closed} />
-   <Div style={{ display: props.open === true ? "block" : "none" }}>
+   <Div style={{ visibility: props.open === true ? "block" : "hidden" }}>
     <Logo height="11%" />
     <nav>
      <NavigationItems />
