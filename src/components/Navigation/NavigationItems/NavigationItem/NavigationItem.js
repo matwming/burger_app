@@ -1,5 +1,7 @@
 import React from "react";
 import styled from "styled-components";
+import { NavLink } from "react-router-dom";
+
 const Li = styled.li`
  margin: 0;
  box-sizing: border-box;
@@ -14,7 +16,7 @@ const Li = styled.li`
   display: block;
  }
 `;
-const A = styled.a`
+const NewLink = styled(NavLink)`
  color: white;
  text-decoration: none;
  height: 100%;
@@ -42,7 +44,7 @@ const A = styled.a`
 `;
 const navigationItem = props => (
  <Li>
-  <A href={props.link}>{props.children}</A>
+  <NewLink to={props.link}>{props.children}</NewLink>
  </Li>
 );
 
