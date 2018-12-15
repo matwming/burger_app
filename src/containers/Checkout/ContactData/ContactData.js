@@ -5,6 +5,8 @@ import axios from "../../../config";
 import Spinner from "../../../components/UI/Spinner/Spinner";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
+import ErrorHandler from "../../ErrorHandler/ErrorHandler";
+import * as actions from "../../../store/actions/index";
 const Div = styled.div`
  margin: 20px auto;
  width: 80%;
@@ -29,12 +31,13 @@ class ContactData extends Component {
    postalCode: ""
   }
  };
-
+ componentDidUpdate() {
+  if (this.props.purchased) {
+   this.props.history.replace("/");
+  }
+ }
  orderHandler = event => {
   event.preventDefault();
-  this.setState({
-   loading: true
-  });
   console.log("loading...started");
   let data = {
    ingredients: this.props.ings,
@@ -48,25 +51,10 @@ class ContactData extends Component {
     email: "test@test.com"
    }
   };
-  axios
-   .post("/orders.json", data)
-   .then(json => {
-    console.log(json);
-    if (json.status === 200) {
-     this.setState({
-      loading: false
-     });
-     this.props.history.replace("/");
-    }
-   })
-   .catch(error => {
-    console.log(error);
-    this.setState({
-     loading: false
-    });
-   });
+  this.props.onOrderBurger(data);
  };
  render() {
+  console.log("contactData");
   let form = (
    <form style={{ margin: "0 auto" }}>
     <Input type="text" name="name" placeholder="your name" />
@@ -78,7 +66,7 @@ class ContactData extends Component {
     </Button>
    </form>
   );
-  if (this.state.loading) {
+  if (this.props.loading) {
    form = <Spinner />;
   }
 
@@ -92,11 +80,18 @@ class ContactData extends Component {
 }
 const mapStateToProps = state => {
  return {
-  ings: state.ingredients,
-  price: state.totalPrice
+  ings: state.burgerBuilder.ingredients,
+  price: state.burgerBuilder.totalPrice,
+  loading: state.order.loading,
+  purchased: state.order.purchased
+ };
+};
+const mapDispatchToProps = dispatch => {
+ return {
+  onOrderBurger: orderData => dispatch(actions.purchaseBurger(orderData))
  };
 };
 export default connect(
  mapStateToProps,
- null
-)(withRouter(ContactData));
+ mapDispatchToProps
+)(withRouter(ErrorHandler(ContactData, axios)));

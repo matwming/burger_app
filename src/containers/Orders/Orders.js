@@ -1,48 +1,46 @@
 import React, { Component, Fragment } from "react";
-
 import Order from "../../components/Order/Order";
 import axios from "../../config";
 import ErrorHandler from "../ErrorHandler/ErrorHandler";
+import { connect } from "react-redux";
+import * as actions from "../../store/actions/index";
+import { Link } from "react-router-dom";
 class Orders extends Component {
  state = {
-  orders: [],
   loading: true
  };
  componentDidMount() {
-  axios
-   .get("/orders.json")
-   .then(res => {
-    if (res.status === 200) {
-     const fetchedOrders = [];
-     for (let key in res.data) {
-      fetchedOrders.push({
-       ...res.data[key],
-       id: key
-      });
-     }
-     this.setState({
-      orders: fetchedOrders,
-      loading: false
-     });
-    }
-   })
-   .catch(err => {
-    this.setState({
-     loading: false
-    });
-    console.log("error", err);
-   });
+  this.props.getOrders();
  }
  render() {
-  console.log(this.state.orders);
-  let orders = null;
-  if (this.state.orders) {
-   orders = this.state.orders.map(el => {
+  console.log(this.props.orders);
+  let orders = (
+   <p style={{ textAlign: "center", padding: "1rem" }}>
+    You currently do not have any orders. Please click <Link to="/"> here</Link> to make an order
+   </p>
+  );
+  if (this.props.orders) {
+   orders = this.props.orders.map(el => {
     return <Order price={el.price} ingredients={el.ingredients} key={el.id} />;
    });
   }
+
   return <Fragment>{orders}</Fragment>;
  }
 }
+const mapStateToProps = state => {
+ return {
+  orders: state.order.orders,
+  loading: state.order.loading
+ };
+};
 
-export default ErrorHandler(Orders, axios);
+const mapDispatchToProps = dispatch => {
+ return {
+  getOrders: () => dispatch(actions.fetchOrders())
+ };
+};
+export default connect(
+ mapStateToProps,
+ mapDispatchToProps
+)(ErrorHandler(Orders, axios));
