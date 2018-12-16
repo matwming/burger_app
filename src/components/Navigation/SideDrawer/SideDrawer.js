@@ -16,7 +16,7 @@ const Div = styled.div`
  box-sizing: border-box;
  transition: transform 3s ease-out;
  @media (min-width: 500px) {
-  display: none;
+  visibility: hidden;
  }
 `;
 
@@ -25,10 +25,10 @@ const sideDrawer = props => {
  return (
   <Fragment>
    <Backdrop show={props.open} clicked={props.closed} />
-   <Div style={{ visibility: props.open === true ? "block" : "hidden" }}>
+   <Div style={{ display: props.open === true ? "block" : "none" }} onClick={props.closed}>
     <Logo height="11%" />
     <nav>
-     <NavigationItems />
+     <NavigationItems isAuthenticated={props.isAuth} />
     </nav>
    </Div>
   </Fragment>

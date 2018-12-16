@@ -10,7 +10,9 @@ class Orders extends Component {
   loading: true
  };
  componentDidMount() {
-  this.props.getOrders();
+  let token = this.props.token;
+  let userId = this.props.userId;
+  this.props.getOrders(token, userId);
  }
  render() {
   console.log(this.props.orders);
@@ -31,13 +33,15 @@ class Orders extends Component {
 const mapStateToProps = state => {
  return {
   orders: state.order.orders,
-  loading: state.order.loading
+  loading: state.order.loading,
+  token: state.auth.token,
+  userId: state.auth.userId
  };
 };
 
 const mapDispatchToProps = dispatch => {
  return {
-  getOrders: () => dispatch(actions.fetchOrders())
+  getOrders: (token, userId) => dispatch(actions.fetchOrders(token, userId))
  };
 };
 export default connect(

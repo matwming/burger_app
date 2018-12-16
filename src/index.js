@@ -10,8 +10,9 @@ import buildBuilderReducer from "./store/reducers/burgerBuilder";
 import thunk from "redux-thunk";
 import orderReducer from "./store/reducers/order";
 import authReducer from "./store/reducers/auth";
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+console.log("process", process.env.NODE_ENV);
 const rootReducer = combineReducers({
  burgerBuilder: buildBuilderReducer,
  order: orderReducer,

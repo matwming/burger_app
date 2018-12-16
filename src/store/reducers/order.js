@@ -10,7 +10,7 @@ const reducer = (state = initialState, action) => {
   case actionTypes.PURCHASE_INIT:
    return updateObject(state, { purchased: false });
   case actionTypes.PURCHASE_BURGER_START:
-   return updateObject(state, { purchased: false });
+   return updateObject(state, { purchased: false, loading: true });
 
   case actionTypes.PURCHASE_BURGER_SUCCESS:
    const newOrder = {

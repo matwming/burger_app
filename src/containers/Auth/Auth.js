@@ -3,7 +3,8 @@ import Button from "../../components/UI/Button/Button";
 import styled from "styled-components";
 import * as actions from "../../store/actions/index";
 import { connect } from "react-redux";
-
+import Spinner from "../../components/UI/Spinner/Spinner";
+import { withRouter } from "react-router-dom";
 const Input = styled.input`
  display: block;
  margin: 10px auto;
@@ -77,6 +78,18 @@ class Auth extends Component {
    return { isSignUp: !prevState.isSignUp };
   });
  };
+
+ componentDidUpdate() {
+  if (this.props.isAuthenticated && this.props.building) {
+   this.props.history.push({
+    pathname: "/checkout"
+   });
+  } else if (this.props.isAuthenticated && this.props.building == false) {
+   this.props.history.push({
+    pathname: "/"
+   });
+  }
+ }
  render() {
   const formElementArray = [];
   for (let key in this.state.orderForm) {
@@ -85,39 +98,59 @@ class Auth extends Component {
     config: this.state.orderForm[key]
    });
   }
-
+  let form = (
+   <form>
+    <Input
+     placeholder="your email"
+     value={this.state.username}
+     onChange={this.onChange.bind(this, "username")}
+    />
+    <Input
+     type="password"
+     placeholder="your password"
+     value={this.state.password}
+     onChange={this.onChange.bind(this, "password")}
+    />
+    <Button btnType="success" clicked={this.onSubmitHandler.bind(this)}>
+     Submit
+    </Button>
+    <Button clicked={this.switchAuthModeHandler}>
+     Switch to {this.state.isSignUp ? "SignIn" : "SignUp"}
+    </Button>
+   </form>
+  );
+  if (this.props.loading) {
+   form = <Spinner />;
+  }
+  let errorMessage = null;
+  if (this.props.error) {
+   errorMessage = <p>{this.props.error.message}</p>;
+  }
   return (
    <Div>
-    <form>
-     <Input
-      placeholder="your email"
-      value={this.state.username}
-      onChange={this.onChange.bind(this, "username")}
-     />
-     <Input
-      type="password"
-      placeholder="your password"
-      value={this.state.password}
-      onChange={this.onChange.bind(this, "password")}
-     />
-     <Button btnType="success" clicked={this.onSubmitHandler.bind(this)}>
-      Submit
-     </Button>
-     <Button clicked={this.switchAuthModeHandler}>
-      Switch to {this.state.isSignUp ? "SignIn" : "SignUp"}
-     </Button>
-    </form>
+    {errorMessage}
+    {form}
    </Div>
   );
  }
 }
-
+const mapStateToProps = state => {
+ return {
+  loading: state.auth.loading,
+  error: state.auth.error,
+  isAuthenticated: state.auth.token !== null,
+  building: state.burgerBuilder.building,
+  path: state.auth.authRedirectPath,
+  building: state.burgerBuilder.building
+ };
+};
 const mapDispatchToProps = dispatch => {
  return {
-  onAuth: (email, password, isSignUp) => dispatch(actions.auth(email, password, isSignUp))
+  onAuth: (email, password, isSignUp) => dispatch(actions.auth(email, password, isSignUp)),
+  onSetAuthRedirectPath: path => dispatch(actions.setAuthRedirectPath(path))
  };
 };
 export default connect(
- null,
+ mapStateToProps,
  mapDispatchToProps
-)(Auth);
+)(withRouter(Auth));
