@@ -37,7 +37,6 @@ const burger = props => {
    <BurgerIngredient type="bread-top" />
    {ingredientNumber === 0 ? "Please start to add ingredients" : transformedIngredients}
    <BurgerIngredient type="bread-bottom" />
-   <button>sdfs</button>
   </Burger>
  );
 };
