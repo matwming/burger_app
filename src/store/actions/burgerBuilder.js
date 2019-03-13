@@ -29,9 +29,9 @@ export const fetchIngredientsFailed = () => {
 export const initIngredient = () => {
  return dispatch => {
   axios
-   .get("https://newburgerapp.firebaseio.com/ingredients.json")
+   .get("/ingredients.json")
    .then(json => {
-    console.log("burgerBuild", json.data);
+    console.log("burgerBuild", json);
     if (json.status === 200) {
      dispatch(setIngredients(json.data));
     }

@@ -7,6 +7,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import ErrorHandler from "../../ErrorHandler/ErrorHandler";
 import * as actions from "../../../store/actions/index";
+import Input from "../../../components/UI/Input/Input";
 const Div = styled.div`
  margin: 20px auto;
  width: 80%;
@@ -19,16 +20,23 @@ const Div = styled.div`
   width: 500px;
  }
 `;
-const Input = styled.input`
- display: block;
-`;
+
 class ContactData extends Component {
  state = {
-  name: "",
-  email: "",
-  address: {
-   street: "",
-   postalCode: ""
+  orderForm: {
+   customer: {
+    name: {
+     elementType: "input",
+     elementConfig: {
+      type: "text",
+      placeholder: "Your Name"
+     }
+    },
+    street: "81 hawthorn road",
+    postcode: "3131",
+    email: "test@test.com",
+    deliveryMethod: "fastest"
+   }
   }
  };
  componentDidUpdate() {
@@ -59,10 +67,11 @@ class ContactData extends Component {
   console.log("contactData");
   let form = (
    <form style={{ margin: "0 auto" }}>
-    <Input type="text" name="name" placeholder="your name" />
-    <Input type="email" name="email" placeholder="your Mail" />
-    <Input type="text" name="street" placeholder="your street" />
-    <Input type="text" name="postal" placeholder="your postal" />
+    <Input inputtype="input" type="text" name="name" placeholder="your name" />
+    <Input inputtype="input" type="email" name="email" placeholder="your Mail" />
+    <Input inputtype="input" type="text" name="street" placeholder="your street" />
+    <Input inputtype="input" type="text" name="postal" placeholder="your postal" />
+    <Input inputtype="textarea" placeholder="Please leave your notes or special requests" />
     <Button btnType="Success" clicked={this.orderHandler}>
      Order
     </Button>

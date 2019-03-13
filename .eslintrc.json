@@ -8,6 +8,7 @@
    "flowVersion": "0.53"
   },
   "propWrapperFunctions": ["forbidExtraProps"],
-  "plugins": ["react"]
+  "plugins": ["react"],
+  "parser": "babel-eslint"
  }
 }
