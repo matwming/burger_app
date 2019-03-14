@@ -1,14 +1,20 @@
 {
- "extends": ["eslint:recommended", "plugin:react/recommended"],
- "settings": {
-  "react": {
-   "createClass": "createReactClass",
-   "pragma": "React",
-   "version": "15.0",
-   "flowVersion": "0.53"
+ "env": {
+  "browser": true,
+  "es6": true
+ },
+ "extends": "eslint:recommended",
+ "globals": {
+  "Atomics": "readonly",
+  "SharedArrayBuffer": "readonly"
+ },
+ "parserOptions": {
+  "ecmaFeatures": {
+   "jsx": true
   },
-  "propWrapperFunctions": ["forbidExtraProps"],
-  "plugins": ["react"],
-  "parser": "babel-eslint"
- }
+  "ecmaVersion": 2018,
+  "sourceType": "module"
+ },
+ "plugins": ["react"],
+ "rules": {}
 }

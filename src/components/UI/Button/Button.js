@@ -10,11 +10,15 @@ const Button = styled.button`
  padding: 10px;
  margin: 10px;
  font-weight: bold;
+ :disabled {
+  color: #ccc;
+  cursor: not-allowed;
+ }
 `;
 
 const button = props => {
  return (
-  <Button btnType={props.btnType} onClick={props.clicked}>
+  <Button btnType={props.btnType} onClick={props.clicked} disabled={props.disabled}>
    {props.children}
   </Button>
  );

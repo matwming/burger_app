@@ -14,6 +14,10 @@ const Div = styled.div`
   outline: none;
   background-color: #ccc;
  }
+ .invalid {
+  border: 1px solid red;
+  background-color: salmon;
+ }
  input {
   width: 100%;
   padding: 10px;
@@ -24,24 +28,71 @@ const Div = styled.div`
   display: block;
   margin-bottom: 8px;
  }
+ select {
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+ }
 `;
 
 export default function InputContact(props) {
  let inputElement;
- switch (props.inputtype) {
+ let validationError = null;
+ const inputClasses = ["inputElement"];
+ if (props.invalid && props.shouldValidate && props.touched) {
+  inputClasses.push("invalid");
+  validationError = <p>Please enter a valid {props.labelName}</p>;
+ }
+
+ switch (props.elementType) {
   case "input":
-   inputElement = <input className="inputElement" {...props} />;
+   inputElement = (
+    <input
+     className={inputClasses.join(" ")}
+     {...props.elementConfig}
+     value={props.value}
+     onChange={props.changed}
+    />
+   );
    break;
   case "textarea":
-   inputElement = <textarea className="inputElement" {...props} />;
+   inputElement = (
+    <textarea
+     className={inputClasses.join(" ")}
+     {...props.elementConfig}
+     value={props.value}
+     onChange={props.changed}
+    />
+   );
+   break;
+  case "select":
+   inputElement = (
+    <select value={props.value} className={inputClasses.join(" ")} onChange={props.changed}>
+     {props.elementConfig.options.map(option => {
+      return (
+       <option key={option.value} value={option.value}>
+        {option.label}
+       </option>
+      );
+     })}
+    </select>
+   );
    break;
   default:
-   inputElement = <input className="inputElement" {...props} />;
+   inputElement = (
+    <input
+     className={inputClasses.join(" ")}
+     {...props.elementConfig}
+     value={props.value}
+     onChange={props.changed}
+    />
+   );
  }
  return (
   <Div>
-   <label className="inputElement">{props.label}</label>
+   <label className={inputClasses.join(" ")}>{props.label}</label>
    {inputElement}
+   {validationError}
   </Div>
  );
 }

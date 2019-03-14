@@ -8,6 +8,7 @@ import { connect } from "react-redux";
 import ErrorHandler from "../../ErrorHandler/ErrorHandler";
 import * as actions from "../../../store/actions/index";
 import Input from "../../../components/UI/Input/Input";
+import uuid from "uuid";
 const Div = styled.div`
  margin: 20px auto;
  width: 80%;
@@ -23,22 +24,108 @@ const Div = styled.div`
 
 class ContactData extends Component {
  state = {
+  formIsValid: false,
   orderForm: {
-   customer: {
-    name: {
-     elementType: "input",
-     elementConfig: {
-      type: "text",
-      placeholder: "Your Name"
-     }
+   name: {
+    elementType: "input",
+    elementConfig: {
+     type: "text",
+     placeholder: "Your Name"
     },
-    street: "81 hawthorn road",
-    postcode: "3131",
-    email: "test@test.com",
-    deliveryMethod: "fastest"
+    value: "",
+    validation: {
+     required: true
+    },
+    valid: false,
+    touched: false
+   },
+   street: {
+    elementType: "input",
+    elementConfig: {
+     type: "text",
+     placeholder: "Street"
+    },
+    value: "",
+    validation: {
+     required: true
+    },
+    valid: false,
+    touched: false
+   },
+   postcode: {
+    elementType: "input",
+    elementConfig: {
+     type: "text",
+     placeholder: "postcode"
+    },
+    value: "",
+    validation: {
+     required: true,
+     minLength: 5,
+     maxLength: 5
+    },
+    valid: false,
+    touched: false
+   },
+   country: {
+    elementType: "input",
+    elementConfig: {
+     type: "text",
+     placeholder: "Country"
+    },
+    value: "",
+    validation: {
+     required: true
+    },
+    valid: false,
+    touched: false
+   },
+   email: {
+    elementType: "input",
+    elementConfig: {
+     type: "email",
+     placeholder: "email"
+    },
+    value: "",
+    validation: {
+     required: true
+    },
+    valid: false,
+    touched: false
+   },
+   deliveryMethod: {
+    elementType: "select",
+    elementConfig: {
+     options: [
+      {
+       value: "fastest",
+       label: "Fastest"
+      },
+      {
+       value: "cheapest",
+       label: "Cheapest"
+      }
+     ]
+    },
+    value: "",
+    valid: true,
+    validation: {}
    }
   }
  };
+ checkValidity(value, rules) {
+  let isValid = true;
+  if (rules.required) {
+   isValid = value.trim() !== "" && isValid;
+  }
+  if (rules.minLength) {
+   isValid = value.length >= rules.minLength && isValid;
+  }
+  if (rules.maxLength) {
+   isValid = value.length <= rules.maxLength && isValid;
+  }
+  return isValid;
+ }
  componentDidUpdate() {
   if (this.props.purchased) {
    this.props.history.replace("/");
@@ -47,32 +134,64 @@ class ContactData extends Component {
  orderHandler = event => {
   event.preventDefault();
   console.log("loading...started");
+  //
+  const formData = {};
+  for (let el in this.state.orderForm) {
+   formData[el] = this.state.orderForm[el].value;
+  }
+  //
   let data = {
    ingredients: this.props.ings,
    price: this.props.price,
    userId: this.props.userId,
-   customer: {
-    name: "ming",
-    address: {
-     street: "81 hawthorn road",
-     postcode: "3131"
-    },
-    email: "test@test.com"
-   }
+   orderData: formData
   };
+
   let token = localStorage.getItem("token");
   this.props.onOrderBurger(data, token);
  };
+ inputChangedHandler = (event, el) => {
+  console.log(event.target.value, el);
+  const updatedOrderForm = {
+   ...this.state.orderForm
+  };
+  const updatedFormElement = { ...updatedOrderForm[el] };
+  updatedFormElement.value = event.target.value;
+  updatedFormElement.valid = this.checkValidity(
+   updatedFormElement.value,
+   updatedFormElement.validation
+  );
+  updatedFormElement.touched = true;
+  console.log(updatedFormElement);
+  updatedOrderForm[el] = updatedFormElement;
+  let formIsValid = true;
+  for (let el in updatedOrderForm) {
+   formIsValid = updatedOrderForm[el].valid && formIsValid;
+  }
+  this.setState({
+   orderForm: updatedOrderForm,
+   formIsValid: formIsValid
+  });
+ };
  render() {
-  console.log("contactData");
   let form = (
    <form style={{ margin: "0 auto" }}>
-    <Input inputtype="input" type="text" name="name" placeholder="your name" />
-    <Input inputtype="input" type="email" name="email" placeholder="your Mail" />
-    <Input inputtype="input" type="text" name="street" placeholder="your street" />
-    <Input inputtype="input" type="text" name="postal" placeholder="your postal" />
-    <Input inputtype="textarea" placeholder="Please leave your notes or special requests" />
-    <Button btnType="Success" clicked={this.orderHandler}>
+    {Object.keys(this.state.orderForm).map(el => {
+     return (
+      <Input
+       elementType={this.state.orderForm[el].elementType}
+       elementConfig={this.state.orderForm[el].elementConfig}
+       value={this.state.orderForm[el].value}
+       key={el}
+       shouldValidate={this.state.orderForm[el].validation}
+       invalid={!this.state.orderForm[el].valid}
+       changed={event => this.inputChangedHandler(event, el)}
+       touched={this.state.orderForm[el].touched}
+       labelName={el}
+      />
+     );
+    })}
+    <Button btnType="Success" clicked={this.orderHandler} disabled={!this.state.formIsValid}>
      Order
     </Button>
    </form>
