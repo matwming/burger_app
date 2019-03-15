@@ -134,12 +134,14 @@ class ContactData extends Component {
  orderHandler = event => {
   event.preventDefault();
   console.log("loading...started");
-  //
+
+  //传递form数据
   const formData = {};
   for (let el in this.state.orderForm) {
    formData[el] = this.state.orderForm[el].value;
   }
   //
+
   let data = {
    ingredients: this.props.ings,
    price: this.props.price,

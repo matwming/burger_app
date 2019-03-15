@@ -5,7 +5,7 @@ const initialState = {
  userId: "",
  error: "",
  loading: false,
- authRedirectPath: ""
+ authRedirectPath: "/"
 };
 const authStart = (state, action) => {
  //console.log("authStart_initialState", initialState);
@@ -20,8 +20,8 @@ const authSuccess = (state, action) => {
   token: action.idToken,
   userId: action.userId,
   error: null,
-  loading: false,
-  authRedirectPath: "/"
+  loading: false
+  //authRedirectPath: "/"
  });
 };
 const authFail = (state, action) => {

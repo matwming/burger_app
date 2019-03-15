@@ -78,13 +78,17 @@ class Auth extends Component {
    return { isSignUp: !prevState.isSignUp };
   });
  };
-
+ componentDidMount() {
+  if (!this.props.building && this.props.authRedirectPath !== "/") {
+   this.props.onSetAuthRedirectPath("/");
+  }
+ }
  componentDidUpdate() {
   if (this.props.isAuthenticated && this.props.building) {
    this.props.history.push({
-    pathname: "/checkout"
+    pathname: this.props.authRedirectPath
    });
-  } else if (this.props.isAuthenticated && this.props.building == false) {
+  } else if (this.props.isAuthenticated && this.props.building === false) {
    this.props.history.push({
     pathname: "/"
    });
@@ -140,7 +144,7 @@ const mapStateToProps = state => {
   error: state.auth.error,
   isAuthenticated: state.auth.token !== null,
   building: state.burgerBuilder.building,
-  path: state.auth.authRedirectPath
+  authRedirectPath: state.auth.authRedirectPath
  };
 };
 const mapDispatchToProps = dispatch => {
